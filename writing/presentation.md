@@ -1,19 +1,20 @@
 presentation
 ========================================================
 
- Missy McIntosh   
+Missy McIntosh   
 
-Tue Jun 16 13:49:17 2015 
+Sun Jun 21 16:04:42 2015 
 
 First Slide
 ========================================================
-
+transition:rotate
 For more details on authoring R presentations click the
 **Help** button on the toolbar.
 
 - Bullet 1
 - Bullet 2
 - Bullet 3
+- yeting Du is super cute
 
 Slide With Code
 ========================================================
