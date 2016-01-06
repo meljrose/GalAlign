@@ -1,0 +1,474 @@
+
+---
+title: "Cluster Position Angle Alignments in the CLASH Survey "
+author: "\n Melissa McIntosh(1, 2); Roberto de Propris(3); Michael West(4) 
+\n \n Institutions: 1. Astrophysics, Harvard University, Cambridge, MA, United States. 2. Maria Mitchell Observatory, Nantucket, MA, United States. 3. University of Turku, Turku, Finland. 4. Lowell Observatory, Flagstaff, AZ, United States. \n \n \n MMO REU Summer 2015"
+bibliography: bibliography.bib
+output:
+    html_document:
+      toc: true
+      theme: united
+---
+
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+ 
+Last updated: `r date()`.
+ 
+
+# Abstract
+
+There exists strong evidence for nearby brightest cluster galaxies (BCGs) to exhibit preferential orientation with respect to their surroundings. Primarily, we see these bright member galaxies aligning themselves with the cluster's principal axis. We have examined the orientations of the 25 CLASH Survey galaxy clusters to see whether this tendency for BCGs to share the same major axis orientation as their host cluster extends to galaxy clusters at redshifts up to 0.9. We find evidence of preferential orientations existing in clusters at these redshifts. The significance of this finding for theories of the formation of clusters are discussed. Supported by NSF Grant #1358980 and the MA Space Grant Consortium. 
+
+
+# Introduction
+
+Galaxies are not randomly distributed in space, but instead lump together in groups and clusters. Typically, galaxy clusters are defined as gravitationally bound systems of a hundred or more galaxies in a volume of diameter $~2 h^{-1} Mpc$ (Schneider 2006). Globally, galaxy clusters tend to be elliptically shaped (@Binggeli1982).  Two parameters used to describe galaxy cluster shape include its ellipticitiy and the position angle of the principal axis of the elliptical shape, which gives the orientation of the cluster shape on the sky. Knowing this orientation is useful for comparisons of the cluster shape with individual galaxies within the cluster, or with neighboring clusters or their galaxies, and etcetera. These comparisons can reveal how surrounding environments effect galaxy cluster formation and how the clusters grow. 
+
+For example, many astronomers have compared the position angle of the brightest cluster galaxy (BCG), or most luminous, central galaxy in a galaxy cluster, with the position angle of the whole galaxy cluster and have found them to be preferentially aligned (@Binggeli1982, @Niederste-Ostholt2010, @Torlina2007 and references therein). This alignment is probably due to a collimated infall of galaxies along filaments, contributing to the growth of the galaxy cluster, which suggests that the growth of the cluster and the formation of the BCG is related (@Torlina2007). 
+
+Additionally, @Niederste-Ostholt2010 found that more dominant ( >0.65 mag brigther than the mean of the 2nd and 3rd brightest galaxies) BCGs show a stronger preferential alignment than less dominant BCGs.  This may be due to hierarchical merging process which could be how clusters form. They also found that rich clusters (clusters with many galaxies within them) have stronger alignments, and also that lower redshift (z < 0.26) have stronger alignments than higher redshifts (up to z = 0.44). This could be due to seconday infall at late redshift. 
+
+Another position angle comparison is between the non-BCG galaxies or satellite galaxies and the position angle of the galaxy cluster. A study of the Coma Cluster found no preferential alignment, suggesting that satellite galaxies have a random merger history around the kernal BCG (@Torlina2007).
+
+Noticing these sorts of orientation alignments and how they change with time (with redshift)  can clue astronomers in to how galaxy clusters form and evolve. Galaxy cluster evolution could include mergers along filaments aligned with the kernal BCG which then imprints a prefered axis of orientation for a cluster, or the BCG could be torqued to become aligned with the cluster axis and filament over time. This project seeks to add information on galaxy cluster alignments at higher redshift (up to 0.9) by using the CLASH cluster survey in order to help astronomers to answer these sorts of questions. If filaments aligned with the BCG imprints a preferred axis of orientation for a cluster, we might expect to see the same preferred orientations at different redshifts. If the BCG is torqued into alignment over time, we might expect to see different orientations at different redshifts. Specifically, we look at three sorts of alignments, given by @Faltenbacher2007: halo, radial, and direct. 
+
+
+First, we review the data from the CLASH Survey. Then we describe the alignment types we examine. 
+Next, we describe the methods of extracting the position angles of the cluster and individual galaxies from the CLASH data, using GALFIT and IRAF. Finally, we describe the application of a two sample Kolmogorov-Smirnoff test (KS test) to each test statistic per alignment type. 
+
+
+# The CLASH Survey
+
+The scientific goals of the CLASH survey include mapping dark matter distributions in galaxy clusters, detecting Type Ia supernovae to redshift z=2, detecting galaxies at z >7, and studying the internal structure and evolution of galaxies in these clusters. The clusters surveyed are listed in Figure 6 and plotted in their galactic coordinates in Figure 7. The clusters were selected to be dynamically relaxed (have a circularly symmetric x-ray surface brightness distribution) and massive (~5 to ~30 x 1014 solar masses).  The clusters were observed with the Hubble Telescope and later mass models were produced.  For further details on the survey, see Postman et al. 2012.
+
+IRAF was used to determine the position angles of the galaxy cluster using the mass models presented as part of the CLASH data.  Analysis was done in GALFIT to determine the position angles of individual galaxies within the cluster. Our null hypothesis was the angles to be compared are distributed in a random and uniform way. A one-sample Kolmogorov-Smirnoff test was selected as our statistic and performed in R. The predetermined type I error rate was set at 5%  The difference between two random uniform variables follows the triangle distribution as given by Figure 4. 
+
+The mass distribution of a galaxy cluster can be estimated from its velocity distribution, temperature of its X-ray emission, or from the existance of gravitaitonal lensing.  The Cluster Lensing And Supernova survey with Hubble (CLASH) produced mass models of 25 massive galaxy clusters using gravitational lensing.  It is with this data set we investigate galatic cluster alignments.  
+
+We retrieved CLASH data from https://archive.stsci.edu/prepds/clash/ on 7/3/2015.  The kappa files for version 2 of the Zitrin nfw models were used for all clusters except macs0717 and macs 1149, which we used the zitrin ltm-gauss models because the nfw were not available. 
+ 
+The clash survey notes that "RXJ 1532 is based on only one candidate multiply-imaged system (not confirmed) and on constraints from weak lensing. Hence, it is a relatively crude model compared to those for the other CLASH clusters."
+
+We analyze position angles in both IRAF and GALFIT.  In both these programs, the position angles are measured in degrees counterclockwise from the positive y axis. We add 90 degrees to get regular cartesian coordinates for convienience. Redshifts were provided by @postman2012. 
+
+ 
+## IRAF Ellipse
+
+IRAF is a computer program written by NOAO to reduce and analyze astronomical images. We used the ellipse task within IRAF to fit elliptical isophotes to the CLASH cluster mass models in order to extract the position angle of the clusters. The task produces a table of parameter estimates for multiple fitted isophotes, from which we took the mean and standard deviation as our position angle and uncertainty. Further documentation on the Ellipse task can be found at http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?ellipse. 
+
+
+
+```{r}
+
+# function for reading in PAs from IRAF ellipse data tables
+pa_extract <- function(path, subname){
+  setwd(path)
+  file.names <- dir(path, pattern =".dat")
+  
+  n <- length(file.names)
+  
+  # name of each cluster
+  name <- character(n)
+  
+  # cluster position angle and its variance
+  cluster_pa <- var <- numeric(n)
+  
+  for(i in 1:n){
+    dat <- read.table(file.names[i],header=FALSE)
+    name[i] <- tolower(gsub("_.*", "", gsub(subname,"", file.names[i])))
+    cat(name[i]," : ")
+    colnames(dat)<- c("sma", "pa")
+    # exclude PAs with less than 10 sma due to beam size concerns
+    dat <- subset(dat, dat$sma >= 10)
+    # clean the data by excluding PAs larger than 1 sd away from the mean 
+    # then take the mean and sd of the file for mcluster_pa and mvar
+    trimmed_dat <- subset(dat, abs(dat$pa - mean(dat$pa)) < sd(dat$pa))
+    if(isTRUE(trimmed_dat)){
+        cluster_pa[i] <- mean(trimmed_dat$pa) + 90
+        var[i] <- sd(trimmed_dat$pa) 
+        
+    } else {
+        cluster_pa[i] <- mean(dat$pa) + 90
+        var[i] <- sd(dat$pa) 
+    }
+    
+
+    cat("Position Angle: ", cluster_pa[i], '+/-', var[i], "\n\n")
+  }
+  
+  ellipsedat <- data.frame(name, cluster_pa, var)
+  return(ellipsedat)
+}
+ 
+path = "/Users/mmcintosh/Dropbox/MMA/GalAlign/modeldata"
+subname = "hlsp_clash_model_"
+massmodelsdat <- pa_extract(path, subname)
+names(massmodelsdat)[names(massmodelsdat)=="cluster_pa"] <- "mcluster_pa"
+names(massmodelsdat)[names(massmodelsdat)=="var"] <- "mvar"
+
+# from listed redshift (https://archive.stsci.edu/prepds/clash/)
+z <- c(0.213, 0.206, 0.224, 0.187, 0.288, 0.890, 0.450, 0.396, 0.399, 0.584, 0.548, 0.686, 0.352, 0.544, 0.440, 0.494, 0.545, 0.391, 0.352, 0.570, 0.313, 0.451, 0.345, 0.234, 0.348)
+
+massmodelsdat$z <- z
+
+```
+ 
+ 
+## GalFit 
+
+GALFIT is a data analysis algorithm designed to fit 2-D analytic functions to galaxies and point sources on digital images (@peng2012). We used it to find the position angles of individual galaxies within our galaxy clusters.  Some BCGs were not fit with GALFIT and were later fit with IRAF as previously described. Documentation of GALFIT can be found at https://users.obs.carnegiescience.edu/peng/work/galfit/galfit.html. 
+
+Inclusion of nonmember galaxies from projection effects was minimized by sampling from the red cluster sequence. 
+ 
+
+
+```{r}
+# add on individual galaxy information to data frame 
+path = "/Users/mmcintosh/Dropbox/MMA/GalAlign/data"
+setwd(path)
+file.names <- dir(path, pattern =".dat")
+n <- length(file.names)
+ 
+# name of each cluster
+name <- character(n)
+ 
+# information about the the brightest galaxy in R
+bcgRmag <- bcgX <- bcgY <- bcgPA <- numeric(n)
+ 
+# X,Y coordinates, R magnitude, and PA (from GalFit) of each galaxy
+X <- Y <- Rmag <- PA <- numeric(n)
+ 
+for(i in 1:n){
+  dat <- read.table(file.names[i],header=F)
+  colnames(dat)<- c("X", "Y", "R", "B", "Reff(R)", "n(R)", "Reff(B)", "n(B)", "color", "PA")
+  name[i] <- tolower(gsub("par.dat","", file.names[i]))
+  
+  # select the BCGs
+  index <- which.min(dat$R)
+  bcgRmag[i] <- dat$R[index]
+  bcgX[i] <- dat$Y[index]
+  bcgY[i] <- dat$X[index]
+  bcgPA[i] <-dat$PA[index] + 90
+  
+  # include the coords, mag, and PA of the individual pcadat
+  X[i] <- list(dat$X)
+  Y[i] <- list(dat$Y)
+  Rmag[i] <- list(dat$R)
+  PA[i] <- list(dat$PA+ 90)
+  #ifelse(PA[i] < 0,PA[i] <- PA[i]  90, PA[i] <- PA[i] + 90)
+}
+ 
+pcadat <- data.frame(name, bcgPA, bcgX, bcgY, bcgRmag) 
+pcadat$X <- sapply(X, paste0) 
+pcadat$Y <- sapply(Y, paste0)
+pcadat$Rmag <- sapply(Rmag, paste0)
+pcadat$PA <- sapply(PA, paste0)
+# merge them all together
+clashdat <- merge(massmodelsdat, pcadat, by = "name", all=T)
+
+
+# some of the BCGs were not found using Galfit.  This was noted when reviewing the images of the clusters and the clusters listed in the data files.  The missing/incorrect BCGs were found using Ellipse on the infrared files (f814w) of the clusters listed in CLASH and replaced in the data frame by hand (below).
+
+# here are bcgs found using f814w from clash survey images and ellipse from iraf
+path = "/Users/mmcintosh/Dropbox/MMA/GalAlign/f814w"
+subname = "hlsp_clash_hst_acs_"
+f814<- pa_extract(path, subname)
+names(f814)[names(f814)=="cluster_pa"] <- "f814pa"
+names(f814)[names(f814)=="var"] <- "f814var"
+clashdat <- merge(clashdat, f814, by = "name", all=T)
+
+```
+
+## Overview of the data
+
+The range of redshifts in the data is 0 - 0.890. 
+
+```{r}
+summary(clashdat$z)
+hist(clashdat$z, main="Redshifts in CLASH Sample", xlab="Redshift")
+```
+
+
+# Alignments and the KS test
+
+
+![Faltenbacher 2007](alignment.png)
+
+Figure 1: The angles examined are halo (Θ), radial (ϕ), and direct(ξ). (Faltenbacher 2007) 
+
+We use the KS test to compare the distribution of alignments with the triangle distribution which would result from randomly distributed position angles. We look at three types of alignments, halo, radial, and direct, over multiple redshift bins.
+ 
+The KS test is useful for finding shifts in a probability distribution with high sensitivity around the median value, but is not so good at finding spreads which affect the tails of a probability distribution more than the median value (Kuiper's test does this)[1](http://cxc.harvard.edu/csc/why/ks_test.html)
+ 
+If the p-value is less than our specified alpha (allowance for type I error) then we reject the null hypothesis (either the null is true and we observed a rare event or the null is false).
+If it is greater, we fail to reject the null hypothesis.
+ 
+We take alpha = 0.05, meaning we are content to have a 5% chance of comitting a type I error. 
+ 
+Our null hypothesis is that these position angles have a random uniform distribution and subsequently no preferential alignments. 
+ 
+```{r}
+
+# The difference between two runif variables follows the triangle distribution; Its CDF is as follows
+
+triangle_cdf <- function(pa){
+        (pa+180)^2/64800*as.numeric((pa>=-180) & (pa<=0)) + (0.5+(360-pa)*pa/64800)*as.numeric((pa>0) & (pa<=180)) + 1*as.numeric(pa>180)
+        
+}
+
+
+```
+
+## Cluster PA vs BCG PA
+Comparison of the cluster PAs with the BCG as fit with Ellipse in IRAF from f814w files
+
+### Direct
+
+```{r}
+directalign <- function(clashdat){
+mdiff_gals <- numeric()
+for(i in 1:nrow(clashdat)){
+mdiff_gals <- c(mdiff_gals, (clashdat[i,]$mcluster_pa - clashdat[i,]$f814pa))
+}
+
+print('direct: ')
+#print(summary(mdiff_gals))
+try(print(ks.test(mdiff_gals, 'triangle_cdf')))
+return(mdiff_gals)
+}
+
+mdiff_gals = directalign(clashdat) 
+try(hist(mdiff_gals, main= "Direct: Cluster PA vs BCG PA", xlab= "Position Angle"))
+```
+
+### Redshift
+```{r}
+
+# create redshift bins
+n <- seq(0,0.5, 0.25)
+labs <- seq(0:length(n)+1)
+bin <- cut(clashdat$z, breaks = c(-Inf, n, Inf), labels = labs)
+ 
+for(i in seq_along(labs)){ 
+  index <- which(bin == i)
+  if(length(index) > 0){ # should be > 0 
+    print(clashdat$z[index])    
+    newdat <- clashdat[index,]
+    mdiff_gals = directalign(newdat)
+    
+  }
+  
+}
+ 
+```
+
+ 
+## BCG PAs vs Member PAs
+
+### Halo 
+
+
+```{r}
+
+# BCG PAs vs Member PAs
+haloalign <- function(clashdat){
+bcgdiff_gals <- numeric()
+
+  for(i in 1:nrow(clashdat)){
+    # find the radial vector
+    X <- as.numeric(unlist(clashdat[i,]$Y)) - 5000
+    Y <- as.numeric(unlist(clashdat[i,]$X)) - 5000
+    r <- atan(Y/X)*180.0/pi
+    #add 90 to negative ones
+    for(j in seq_along(r)){
+     ifelse(r[j] < 0, r[j] <- r[j] + 90, r[j] <- r[j]) 
+    }
+    diff <- (r- clashdat[i,]$f814pa)
+    bcgdiff_gals <- c(bcgdiff_gals, diff)
+
+  }
+print('halo: ')
+#summary(bcgdiff_gals)
+print(ks.test(bcgdiff_gals, 'triangle_cdf'))
+return(bcgdiff_gals)
+}
+bcgdiff_gals = haloalign(clashdat)
+hist(bcgdiff_gals, xlab = "Position Angles", main = "Halo: BCG PAs vs Member PAs")
+```
+
+
+
+### Radial
+this is looking at the vector the PA of the pcadat make with the center of the cluster
+I'm not sure I understand how to compute this one: is it gal_pa - Pa wrt cluster center => 0 if aligned?
+ALL
+```{r}
+# BCG PAs vs Member PAs
+
+rad <- function(clashdat){
+  
+  radialdiff <- numeric()
+  for(i in 1:nrow(clashdat)){
+    # find the radial vector
+    X <- as.numeric(unlist(clashdat[i,]$Y)) - 5000
+    Y <- as.numeric(unlist(clashdat[i,]$X)) - 5000
+    r <- atan(Y/X)*180.0/pi
+    for(j in seq_along(r)){
+     ifelse(r[j] < 0, r[j] <- r[j] + 90, r[j] <- r[j]) 
+    }
+   # find the acute angle difference
+    diff <- (r- (as.numeric(unlist(clashdat[i,]$PA))))
+    radialdiff <- c(radialdiff, diff)
+  }
+  
+#print(summary(radialdiff))
+print('radial:')
+print(ks.test(radialdiff, 'triangle_cdf'))
+return(radialdiff)
+}
+
+radialdiff = rad(clashdat)
+try(hist(radialdiff, xlab = "Position Angles", main = "Radial: BCG PAs vs Member PAs"))
+
+
+```
+
+### Direct
+
+```{r}
+directalign <- function(clashdat){
+mdiff_gals <- numeric()
+for(i in 1:nrow(clashdat)){
+mdiff_gals <- c(mdiff_gals, (clashdat[i,]$f814pa - as.numeric(unlist(clashdat[i,]$PA))))
+}
+
+print('direct: ')
+#print(summary(mdiff_gals))
+print(ks.test(mdiff_gals, 'triangle_cdf'))
+return(mdiff_gals)
+}
+
+mdiff_gals = directalign(clashdat) 
+try(hist(mdiff_gals, main= "Direct: BCG PA vs Member PA", xlab= "Position Angle"))
+```
+ 
+
+### Redshift
+```{r}
+
+# create redshift bins
+n <- seq(0,0.5, 0.25)
+labs <- seq(0:length(n)+1)
+bin <- cut(clashdat$z, breaks = c(-Inf, n, Inf), labels = labs)
+ 
+for(i in seq_along(labs)){ 
+  index <- which(bin == i)
+  if(length(index) > 0){ # should be > 0 
+    print(clashdat$z[index])    
+    newdat <- clashdat[index,]
+    a = haloalign(newdat)
+    #print(ks.test(a, 'triangle_cdf'))
+    b = rad(newdat)
+    c= directalign(newdat)
+  }
+  
+}
+ 
+```
+ 
+## Cluster PA vs Member Galaxy PA
+This is looking at the difference between the cluster PA and each galaxy's PA.  Is the difference random uniform from -90, 90? Is it peaked about an axis? 
+
+### Halo
+This is looking at the difference between the cluster PA and the brightest galaxys PA.  Is the difference random uniform from -90, 90? Is it peaked about an axis? 
+
+```{r}
+# Cluster PA vs Member galaxy PA
+haloalign <- function(clashdat){
+bcgdiff_gals <- numeric()
+
+  for(i in 1:nrow(clashdat)){
+    # find the radial vector
+    X <- as.numeric(unlist(clashdat[i,]$Y)) - 5000
+    Y <- as.numeric(unlist(clashdat[i,]$X)) - 5000
+    r <- atan(Y/X)*180.0/pi
+    for(j in seq_along(r)){
+    ifelse(r[j] < 0, r[j] <- r[j] + 90, r[j] <- r[j]) 
+    }
+    diff <- (r- clashdat[i,]$mcluster_pa)
+    bcgdiff_gals <- c(bcgdiff_gals, diff)
+
+  }
+#summary(bcgdiff_gals)
+print('halo: ')
+print(ks.test(bcgdiff_gals, 'triangle_cdf'))
+return(bcgdiff_gals)
+}
+bcgdiff_gals = haloalign(clashdat)
+hist(bcgdiff_gals, xlab = "Position Angles", main = "Halo: Cluster PA vs Member PA")
+```
+
+
+### Direct
+```{r}
+# Cluster PA vs Member galaxy PA
+directalign <- function(clashdat){
+mdiff_gals <- numeric()
+for(i in 1:nrow(clashdat)){
+mdiff_gals <- c(mdiff_gals, (clashdat[i,]$mcluster_pa - as.numeric(unlist(clashdat[i,]$PA))))
+}
+
+print('direct: ')
+#print(summary(mdiff_gals))
+print(ks.test(mdiff_gals, 'triangle_cdf'))
+return(mdiff_gals)
+}
+
+mdiff_gals = directalign(clashdat) 
+try(hist(mdiff_gals, main= "Direct: Cluster vs Member PA", xlab= "Position Angle"))
+```
+### Redshift
+```{r}
+
+# create redshift bins
+n <- seq(0,0.5, 0.25)
+labs <- seq(0:length(n)+1)
+bin <- cut(clashdat$z, breaks = c(-Inf, n, Inf), labels = labs)
+ 
+for(i in seq_along(labs)){ 
+  index <- which(bin == i)
+  if(length(index) > 0){ # should be > 0 
+    print(index)
+    print(clashdat$z[index])    
+    newdat <- clashdat[index,]
+    a = haloalign(newdat)
+    b = directalign(newdat)
+  }
+  
+}
+ 
+```
+# Conclusion
+We reject the null hypothesis that the angles are random for measured Cluster and BCG alignments but fail to reject the null for the Cluster and BCG alignments separated by redshift bins.  We reject the null hypothesis for measured Cluster and Member alignments, including those in all redshift bins.  Likewise, we reject the null hypothesis for measured BCG and Member alignments, including those in all redshift bins.  We find that there is evidence that there is preferential alignment for all three comparisons and find no variation with redshift for the Cluster and Member and BCG and Member comparisons for these clusters. We are inconclusive in detecting variation with redshift in the Cluster and BCG comparison. 
+
+Further work should include analysis on more data, including additional clusters at higher redshifts. If these results are supported, we can conclude that either the galaxy cluster evolution theory that filaments aligned with the BCG imprint a preferred axis of orientation for a cluster is supported, or that the BCG is torqued into alignment with the cluster prior to redshifts of 0.9.
+
+
+
+# References
+
+Binggeli, B. (1982). The shape and orientation of clusters of galaxies. Astronomy and Astrophysics, 107(2), 338–349. Retrieved from http://onlinelibrary.wiley.com/doi/10.1002/cbdv.200490137/abstract\nhttp://adsabs.harvard.edu/full/1982A%26A...107..338B
+Coziol, R., Andernach, H., Caretta, C. a., Alamo-Martinez, K. a., & Tago, E. (2009). The dynamical state of brightest cluster galaxies and the formation of clusters, (1992), 114. http://doi.org/10.1088/0004-6256/137/6/4795
+Faltenbacher, a, Li, C., Mao, S., Bosch, F. C. Van Den, Yang, X., Jing, Y. P., … Mo, H. J. (2007). The Astrophysical Journal , 662: L71–L74, 2007 June 20 ᭧ 2007., 71–74.
+Niederste-Ostholt, M., Strauss, M. a., Dong, F., Koester, B. P., & McKay, T. a. (2010). Alignment of brightest cluster galaxies with their host clusters. Monthly Notices of the Royal Astronomical Society, 405(3), 2023–2036. http://doi.org/10.1111/j.1365-2966.2010.16597.x
+Peng, C. Y., Ho, L. C., Impey, C. D., & Rix, H. (n.d.). Detailed structural decomposition of galaxy images 1.
+Postman, M., Coe, D., Ben, N., Bradley, L., Broadhurst, T., Donahue, M., … Lemze, D. (2012). The cluster lensing and supernova survey with hubble: an overview, 1689.
+Torlina, L., De Propris, R., & West, M. J. (2007). Galaxy Orientations in the Coma Cluster. The Astrophysical Journal, 13(660), 97–100. http://doi.org/10.1086/518162
+Tovmassian, H. M., & Andernach, H. (2012). On the formation of cD galaxies and their parent clusters. Monthly Notices of the Royal Astronomical Society, 427(3), 2047–2056. http://doi.org/10.1111/j.1365-2966.2012.22044.x
+Schneider, Peter (2006). Extragalactic Astronomy and Cosmology. Springer-Verlag Berlin Heidelberg 978-3-540-33175-9. 
+
+
+ 
